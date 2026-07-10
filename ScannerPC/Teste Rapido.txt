@@ -1,0 +1,159 @@
+
+
+COPIE E COLE NO CMD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@echo off
+title Diagnostico do Sistema
+color 0A
+
+:: ============================
+:: CONFIGURACAO
+:: ============================
+
+set "PASTA=%USERPROFILE%\Downloads\Diagnosticos"
+
+if not exist "%PASTA%" (
+    mkdir "%PASTA%"
+)
+
+set DATA=%DATE:~-4%%DATE:~3,2%%DATE:~0,2%
+set HORA=%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
+set HORA=%HORA: =0%
+
+set "ARQUIVO=%PASTA%\Relatorio_%COMPUTERNAME%_%DATA%_%HORA%.txt"
+
+echo.
+echo Coletando informacoes...
+echo Aguarde...
+echo.
+
+(
+echo ============================================================
+echo              RELATORIO DE DIAGNOSTICO
+echo ============================================================
+echo.
+echo Computador : %COMPUTERNAME%
+echo Usuario    : %USERNAME%
+echo Data       : %DATE%
+echo Hora       : %TIME%
+echo.
+
+echo ============================================================
+echo SISTEMA OPERACIONAL
+echo ============================================================
+systeminfo
+
+echo.
+echo ============================================================
+echo PROCESSADOR
+echo ============================================================
+wmic cpu get Name,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed
+
+echo.
+echo ============================================================
+echo MEMORIA RAM
+echo ============================================================
+wmic computersystem get TotalPhysicalMemory
+wmic memorychip get Manufacturer,Capacity,Speed
+
+echo.
+echo ============================================================
+echo DISCOS
+echo ============================================================
+wmic logicaldisk get DeviceID,Size,FreeSpace
+
+echo.
+echo ============================================================
+echo PLACA DE VIDEO
+echo ============================================================
+wmic path win32_VideoController get Name
+
+echo.
+echo ============================================================
+echo PLACA MAE
+echo ============================================================
+wmic baseboard get Manufacturer,Product
+
+echo.
+echo ============================================================
+echo BIOS
+echo ============================================================
+wmic bios get Manufacturer,Version
+
+echo.
+echo ============================================================
+echo REDE
+echo ============================================================
+ipconfig /all
+
+echo.
+echo ============================================================
+echo ENDERECOS MAC
+echo ============================================================
+getmac
+
+echo.
+echo ============================================================
+echo PROCESSOS
+echo ============================================================
+tasklist
+
+echo.
+echo ============================================================
+echo PORTAS DE REDE
+echo ============================================================
+netstat -ano
+
+echo.
+echo ============================================================
+echo USUARIOS
+echo ============================================================
+net user
+
+echo.
+echo ============================================================
+echo FIM DO RELATORIO
+echo ============================================================
+
+) > "%ARQUIVO%"
+
+cls
+echo ==========================================
+echo      DIAGNOSTICO CONCLUIDO
+echo ==========================================
+echo.
+echo Relatorio salvo em:
+echo.
+echo %ARQUIVO%
+echo.
+
+pause
+
+
+
+
+
+
+
